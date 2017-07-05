@@ -67,7 +67,7 @@ L:
 	for {
 		i++
 
-		f.Seek((Offset*i)*-1, os.SEEK_END)
+		f.Seek((Offset*i)*-1, io.SeekEnd)
 		r = bufio.NewReader(f)
 
 		info, err := f.Stat()
@@ -77,7 +77,7 @@ L:
 		}
 
 		if info.Size() <= Offset*i {
-			f.Seek(0, os.SEEK_SET)
+			f.Seek(0, io.SeekStart)
 			r = bufio.NewReader(f)
 
 			for {
