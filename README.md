@@ -20,14 +20,13 @@ type TimeLine interface {
 
 ```
 command [options] file
+  -m int
+        minute interval (default 5)
   -datetime string
         start datetime
-  -h    this help
-  -layout string
-        datetime layout (default "2006-01-02T15:04:05Z07:00")
   -location string
         datetime location name (default "Asia/Tokyo")
-  -m int
-        time minutes (default 5)
+  -i    display info
+  -h    this help
   -v    show version and exit
 ```

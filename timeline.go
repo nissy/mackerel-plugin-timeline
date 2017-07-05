@@ -21,10 +21,10 @@ var (
 	Location       *time.Location
 	TimeEnd        = time.Now()
 	TimeStart      = TimeEnd.Add(time.Duration(-1**Minutes) * time.Minute)
-	TimeLayout     = flag.String("layout", time.RFC3339, "datetime layout")
 	TimeStartValue = flag.String("datetime", "", "start datetime")
 	LocationName   = flag.String("location", "Asia/Tokyo", "datetime location name")
 	Minutes        = flag.Int64("m", 5, "time minutes")
+	isInfo         = flag.Bool("i", false, "display info")
 	isVersion      = flag.Bool("v", false, "show version and exit")
 	isHelp         = flag.Bool("h", false, "this help")
 )
@@ -38,12 +38,14 @@ type TimeLine interface {
 
 type Plugin struct {
 	TimeLine
-	FileName string
+	TimeLayout string
+	FileName   string
 }
 
 func NewPlugin(t TimeLine) Plugin {
 	return Plugin{
-		TimeLine: t,
+		TimeLine:   t,
+		TimeLayout: time.RFC3339,
 	}
 }
 
@@ -166,7 +168,7 @@ func (pl Plugin) Run() error {
 	}
 
 	if len(*TimeStartValue) > 0 {
-		if TimeStart, err = time.ParseInLocation(*TimeLayout, *TimeStartValue, Location); err != nil {
+		if TimeStart, err = time.ParseInLocation(pl.TimeLayout, *TimeStartValue, Location); err != nil {
 			return err
 		}
 
@@ -186,7 +188,9 @@ func (pl Plugin) Run() error {
 		return errors.New("End time is small")
 	}
 
-	fmt.Fprintf(os.Stderr, "%s -> %s\n", TimeStart.Format(*TimeLayout), TimeEnd.Format(*TimeLayout))
+	if *isInfo {
+		fmt.Fprintf(os.Stderr, "%s -> %s\n", TimeStart.Format(pl.TimeLayout), TimeEnd.Format(pl.TimeLayout))
+	}
 
 	helper := mackerelplugin.NewMackerelPlugin(pl)
 	helper.Run()

@@ -14,7 +14,8 @@ import (
 const allcount = "allcount"
 
 var (
-	replacer = strings.NewReplacer("  ", " ")
+	replacer   = strings.NewReplacer("  ", " ")
+	timeLayout = "2006/01/02 15:04:05"
 )
 
 type SendCount struct {
@@ -36,12 +37,12 @@ type send struct {
 	message                     string
 }
 
-func parseSend(line string) send {
+func newSend(line string) send {
 	sd := send{}
 	var i int
 
 	if s := strings.Split(replacer.Replace(line), " "); len(s) == 11 || len(s) == 12 {
-		sd.time, _ = time.ParseInLocation(*timeline.TimeLayout, strings.Join(s[0:2], " "), timeline.Location)
+		sd.time, _ = time.ParseInLocation(timeLayout, strings.Join(s[0:2], " "), timeline.Location)
 		sd.result = s[2]
 		sd.statusCode = s[3]
 		sd.transactionID = s[4]
@@ -65,15 +66,15 @@ func parseSend(line string) send {
 }
 
 func (sdc SendCount) ParseTime(line string) time.Time {
-	return parseSend(line).time
+	return newSend(line).time
 }
 
 func (sdc SendCount) ToConut(line string) error {
-	if send := parseSend(line); timeline.TimeEnd.Unix() < send.time.Unix() {
+	if ps := newSend(line); timeline.TimeEnd.Unix() < ps.time.Unix() {
 		return errors.New("End time is small")
-	} else if timeline.TimeStart.Unix() <= send.time.Unix() {
-		sdc.count[send.result]++
-		sdc.count[send.envelopeToAddressDomain]++
+	} else if timeline.TimeStart.Unix() <= ps.time.Unix() {
+		sdc.count[ps.result]++
+		sdc.count[ps.envelopeToAddressDomain]++
 		sdc.count[allcount]++
 	}
 
@@ -171,6 +172,7 @@ func main() {
 		},
 	)
 
+	pl.TimeLayout = timeLayout
 	os.Exit(exitcode(pl.Run()))
 }
 
