@@ -23,7 +23,7 @@ var (
 	TimeStart      = TimeEnd.Add(time.Duration(-1**Minutes) * time.Minute)
 	TimeStartValue = flag.String("datetime", "", "start datetime")
 	LocationName   = flag.String("location", "Asia/Tokyo", "datetime location name")
-	Minutes        = flag.Int64("m", 5, "time minutes")
+	Minutes        = flag.Int64("m", 1, "time minutes")
 	isInfo         = flag.Bool("i", false, "display info")
 	isVersion      = flag.Bool("v", false, "show version and exit")
 	isHelp         = flag.Bool("h", false, "this help")
