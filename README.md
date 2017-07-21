@@ -21,7 +21,7 @@ type TimeLine interface {
 ```
 command [options] file
   -m int
-        minute interval (default 5)
+        minute interval (default 1)
   -datetime string
         start datetime
   -location string
