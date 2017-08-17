@@ -24,6 +24,7 @@ var (
 	TimeStartValue = flag.String("datetime", "", "start datetime")
 	LocationName   = flag.String("location", "Asia/Tokyo", "datetime location name")
 	Minutes        = flag.Int64("m", 1, "time minutes")
+	MetricName     = flag.String("metric", "", "specify a to metric name")
 	isInfo         = flag.Bool("i", false, "display info")
 	isVersion      = flag.Bool("v", false, "show version and exit")
 	isHelp         = flag.Bool("h", false, "this help")
@@ -31,8 +32,8 @@ var (
 
 type TimeLine interface {
 	ToConut(line string) error
-	ToMetrics() map[string]interface{}
-	ToGraph() map[string]mackerelplugin.Graphs
+	ToMetrics(metricName string) map[string]interface{}
+	ToGraph(metricName string) map[string]mackerelplugin.Graphs
 	ParseTime(line string) time.Time
 }
 
@@ -50,7 +51,7 @@ func NewPlugin(t TimeLine) Plugin {
 }
 
 func (pl Plugin) GraphDefinition() map[string]mackerelplugin.Graphs {
-	return pl.ToGraph()
+	return pl.ToGraph(*MetricName)
 }
 
 func (pl Plugin) FetchMetrics() (map[string]interface{}, error) {
@@ -140,7 +141,7 @@ L:
 		}
 	}
 
-	return pl.ToMetrics(), nil
+	return pl.ToMetrics(*MetricName), nil
 }
 
 func (pl Plugin) Run() error {

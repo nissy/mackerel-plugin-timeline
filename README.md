@@ -10,8 +10,8 @@ timeline custom metrics plugin for mackerel.io agent.
 ```
 type TimeLine interface {
 	ToConut(line string) error
-	ToMetrics() map[string]interface{}
-	ToGraph() map[string]mackerelplugin.Graphs
+	ToMetrics(metricName string) map[string]interface{}
+	ToGraph(metricName string) map[string]mackerelplugin.Graphs
 	ParseTime(line string) time.Time
 }
 ```
@@ -22,6 +22,8 @@ type TimeLine interface {
 command [options] file
   -m int
         minute interval (default 1)
+  -metric string
+        specify a to metric name
   -datetime string
         start datetime
   -location string
